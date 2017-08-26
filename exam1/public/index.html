@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <title>exam1</title>
+    <script src="https://cdn.bootcss.com/vue/2.2.2/vue.min.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <fieldset>
+            <legend class="">登录表单</legend>
+            <p>用户名：
+                <input type="text" name="inputUser" v-model="username">
+            </p>
+            <p>密 码:
+                <input type="password" name="inputPwd" v-model="password">
+            </p>
+            <p>
+                <button id="submit" v-on:click="submit">提交</button>
+            </p>
+        </fieldset>
+        <p id="msg"></p>
+    </div>
+    <script>
+        var v = new Vue({
+            el: '#app',
+            data: {
+                username: '',
+                password: ''
+            },
+            methods: {
+                submit: function() {
+                    var xmlhttp;
+                    if (window.XMLHttpRequest) {
+                        //  IE7+, Firefox, Chrome, Opera, Safari 浏览器执行代码
+                        xmlhttp = new XMLHttpRequest();
+                    } else {
+                        // IE6, IE5 浏览器执行代码
+                        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+                    }
+                    xmlhttp.onreadystatechange = function() {
+                        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                            var v = document.getElementById('msg');
+                            var rsl = JSON.parse(xmlhttp.responseText);
+                            if (rsl['code'] == 'ok') {
+                                document.write(rsl.msg);
+                            } else {
+                                v.innerHTML = rsl.msg;
+                            }
+                            console.log('服务器返回结束:' + xmlhttp.responseText);
+                        }
+                    };
+                    var uri_str = "/login?user=" + this.username + "&pwd=" + this.password;
+                    xmlhttp.open("GET", uri_str, true);
+                    xmlhttp.send();
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
